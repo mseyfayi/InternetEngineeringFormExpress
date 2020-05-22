@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-require('dotenv').config();
-
 /**
  * Module dependencies.
  */
-const app = require('./app');
-const http = require('http');
+import app from "./src/app";
+import {config} from "dotenv";
+import http from "http";
 
+config();
 /**
  * Get port from environment and store in Express.
  */
