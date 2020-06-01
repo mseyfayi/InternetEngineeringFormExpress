@@ -14,7 +14,7 @@ export const store = data => new Promise((resolve, reject) => {
         })
         .catch(error =>
             reject({
-                status: 422,
-                body: error
+                status: error.status || 422,
+                body: error.error
             }));
 });

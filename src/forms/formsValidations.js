@@ -1,6 +1,21 @@
+import * as formData from './formData';
+
 const hasRequired = (data, field) => !!data[field.toLocaleLowerCase()];
 
-export default data => new Promise((resolve, reject) => {
+const idConflict = async (data) => {
+    const forms = await formData.read();
+    return !!forms.find(item => item.id === data.id)
+};
+
+export default data => new Promise(async (resolve, reject) => {
+    if (await idConflict(data)) {
+        reject({
+            status: 409,
+            error: 'This id exists'
+        });
+    }
+
+
     const errors = [];
 
     const requiredFields = ['Title', 'Fields', 'Id'];
@@ -20,6 +35,6 @@ export default data => new Promise((resolve, reject) => {
     if (errors.length === 0) {
         resolve(data);
     } else {
-        reject(errors);
+        reject({error: errors});
     }
 });
