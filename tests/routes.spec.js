@@ -1,19 +1,39 @@
 import request from "supertest";
 import app from "../index";
+import {clearForTest, readDBForTest} from "../src/repository";
+
+const OLD_ENV = process.env;
+let data;
 
 beforeAll(done => {
+    process.env = {...OLD_ENV};
+    process.env.NODE_ENV = 'test';
+    process.env.PORT = 8080;
     done()
 });
 
 afterAll(done => {
+    process.env = OLD_ENV;
     app.close();
     done();
 });
 
-describe('Not Found', () => {
-    it('should error with 404 status', async () => {
+describe('Not Found URL', () => {
+    it('should error with 404 status by get', async () => {
         const res = await request(app)
             .get('/notFound');
+        expect(res.statusCode).toEqual(404);
+    });
+
+    it('should error with 404 status by post', async () => {
+        const res = await request(app)
+            .post('/notFound');
+        expect(res.statusCode).toEqual(404);
+    });
+
+    it('should error with 404 status by put', async () => {
+        const res = await request(app)
+            .put('/notFound');
         expect(res.statusCode).toEqual(404);
     })
 });
@@ -56,6 +76,8 @@ describe('Post /api/forms', () => {
         ]
     };
     it('should error without title', async () => {
+        await clearForTest();
+
         const res = await request(app)
             .post('/api/forms')
             .send(noTitleData);
@@ -68,6 +90,9 @@ describe('Post /api/forms', () => {
             .map(item => item.toLocaleLowerCase().includes('title'))
             .reduce((a, b) => a || b, false);
         expect(isTitleInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
     });
 
     const noIdData = {
@@ -107,6 +132,8 @@ describe('Post /api/forms', () => {
         ]
     };
     it('should error without id', async () => {
+        await clearForTest();
+
         const res = await request(app)
             .post('/api/forms')
             .send(noIdData);
@@ -119,6 +146,9 @@ describe('Post /api/forms', () => {
             .map(item => item.toLocaleLowerCase().includes('id'))
             .reduce((a, b) => a || b, false);
         expect(isIdInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
     });
 
     const noFieldsData = {
@@ -126,6 +156,8 @@ describe('Post /api/forms', () => {
         "id": "4",
     };
     it('should error without fields', async () => {
+        await clearForTest();
+
         const res = await request(app)
             .post('/api/forms')
             .send(noFieldsData);
@@ -138,6 +170,9 @@ describe('Post /api/forms', () => {
             .map(item => item.toLocaleLowerCase().includes('fields'))
             .reduce((a, b) => a || b, false);
         expect(isIdInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
     });
 
     const noTitleNoIdData = {
@@ -176,6 +211,8 @@ describe('Post /api/forms', () => {
         ]
     };
     it('should error without title and id', async () => {
+        await clearForTest();
+
         const res = await request(app)
             .post('/api/forms')
             .send(noTitleNoIdData);
@@ -193,6 +230,9 @@ describe('Post /api/forms', () => {
 
         expect(isIdInErrors).toBe(true);
         expect(isTitleInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
     });
 
     const fieldsNoNameData = {
@@ -212,6 +252,8 @@ describe('Post /api/forms', () => {
         ]
     };
     it('should error with fields without name', async () => {
+        await clearForTest();
+
         const res = await request(app)
             .post('/api/forms')
             .send(fieldsNoNameData);
@@ -225,6 +267,9 @@ describe('Post /api/forms', () => {
             .map(item => item.includes('name') && item.includes('items'))
             .reduce((a, b) => a || b, false);
         expect(isIdInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
     });
 
     const fieldsNoTitleData = {
@@ -264,6 +309,8 @@ describe('Post /api/forms', () => {
         ]
     };
     it('should error with fields without title', async () => {
+        await clearForTest();
+
         const res = await request(app)
             .post('/api/forms')
             .send(fieldsNoTitleData);
@@ -277,6 +324,9 @@ describe('Post /api/forms', () => {
             .map(item => item.includes('title') && item.includes('items'))
             .reduce((a, b) => a || b, false);
         expect(isIdInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
     });
 
     const fieldsNoTypeData = {
@@ -310,6 +360,8 @@ describe('Post /api/forms', () => {
         ]
     };
     it('should error with fields without type', async () => {
+        await clearForTest();
+
         const res = await request(app)
             .post('/api/forms')
             .send(fieldsNoTypeData);
@@ -323,6 +375,9 @@ describe('Post /api/forms', () => {
             .map(item => item.includes('type') && item.includes('items'))
             .reduce((a, b) => a || b, false);
         expect(isIdInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
     });
 
     const fieldsNoTypeNoNameData1 = {
@@ -355,6 +410,8 @@ describe('Post /api/forms', () => {
         ]
     };
     it('should error with fields without type and name in one item', async () => {
+        await clearForTest();
+
         const res = await request(app)
             .post('/api/forms')
             .send(fieldsNoTypeNoNameData1);
@@ -373,6 +430,9 @@ describe('Post /api/forms', () => {
             .reduce((a, b) => a || b, false);
         expect(isTypeInErrors).toBe(true);
         expect(isNameInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
     });
 
     const fieldsNoTypeNoNameData2 = {
@@ -398,6 +458,8 @@ describe('Post /api/forms', () => {
         ]
     };
     it('should error with fields without type and name in separate items', async () => {
+        await clearForTest();
+
         const res = await request(app)
             .post('/api/forms')
             .send(fieldsNoTypeNoNameData2);
@@ -416,10 +478,60 @@ describe('Post /api/forms', () => {
             .reduce((a, b) => a || b, false);
         expect(isTypeInErrors).toBe(true);
         expect(isNameInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
+    });
+
+    const emptyFieldData = {
+        "title": "A sample form",
+        "id": "2",
+        "fields": []
+    };
+    it('should be fine with empty fields', async () => {
+        await clearForTest();
+
+        const res = await request(app)
+            .post('/api/forms')
+            .send(emptyFieldData);
+        expect(res.statusCode).toEqual(200);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(1);
+    });
+
+    const sampleData1 = {
+        "title": "A sample form",
+        "id": "2",
+        "fields": []
+    };
+    const sampleData2 = {
+        "title": "A sample form",
+        "id": "2",
+        "fields": []
+    };
+    it('should error 409(conflict) for exiting id', async () => {
+        await clearForTest();
+
+        const res1 = await request(app)
+            .post('/api/forms')
+            .send(sampleData1);
+        expect(res1.statusCode).toEqual(200);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(1);
+
+        const res2 = await request(app)
+            .post('/api/forms')
+            .send(sampleData2);
+        expect(res2.statusCode).toEqual(409);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(1);
     });
 
     const completeData = {
-        "title": "A sample form",
+        "title": "A samp22le form",
         "id": "1",
         "fields": [
             {
@@ -456,22 +568,15 @@ describe('Post /api/forms', () => {
         ]
     };
     it('should be fine with complete fields', async () => {
+        await clearForTest();
+
         const res = await request(app)
             .post('/api/forms')
             .send(completeData);
         expect(res.statusCode).toEqual(200);
-    });
 
-    const emptyFieldData = {
-        "title": "A sample form",
-        "id": "2",
-        "fields": []
-    };
-    it('should be fine with empty fields', async () => {
-        const res = await request(app)
-            .post('/api/forms')
-            .send(emptyFieldData);
-        expect(res.statusCode).toEqual(200);
+        data = await readDBForTest();
+        expect(data.length).toBe(1);
     });
 });
 

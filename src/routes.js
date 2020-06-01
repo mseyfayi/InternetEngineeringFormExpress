@@ -1,4 +1,4 @@
-import * as forms from '../forms'
+import * as forms from './forms'
 
 const appRouter = (app) => {
     const baseUrl = '/api';
