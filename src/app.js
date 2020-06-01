@@ -8,13 +8,13 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cors());
 
+// set routes
+appRouter(app);
+
 // error handler
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
-    res.send({message: err.message});
+    res.send({data: err.body});
 });
-
-// set routes
-appRouter(app);
 
 export default app;

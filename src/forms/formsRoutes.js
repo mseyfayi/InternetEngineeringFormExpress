@@ -1,14 +1,11 @@
 import express from 'express';
+import {get, post} from "./formsController";
 
 const router = express.Router();
 const url = '/forms';
 
-router.post(url, (req, res) => {
-    res.sendStatus(200)
-});
+router.post(url, post);
 
-router.get(url, (req, res) => {
-    res.sendStatus(200)
-});
+router.get(url, get);
 
 export default router;
