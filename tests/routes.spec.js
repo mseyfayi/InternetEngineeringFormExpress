@@ -485,7 +485,7 @@ describe('Post /api/forms', () => {
 
     const emptyFieldData = {
         "title": "A sample form",
-        "id": "2",
+        "id": "3",
         "fields": []
     };
     it('should be fine with empty fields', async () => {
@@ -577,6 +577,29 @@ describe('Post /api/forms', () => {
 
         data = await readDBForTest();
         expect(data.length).toBe(1);
+    });
+
+    it('should store multiple forms', async () => {
+        await clearForTest();
+
+        const res1 = await request(app)
+            .post('/api/forms')
+            .send(emptyFieldData);
+        expect(res1.statusCode).toEqual(200);
+
+        const res2 = await request(app)
+            .post('/api/forms')
+            .send(sampleData1);
+        expect(res2.statusCode).toEqual(200);
+
+        const res3 = await request(app)
+            .post('/api/forms')
+            .send(completeData);
+        expect(res3.statusCode).toEqual(200);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(3);
+        expect(data).toMatchObject([emptyFieldData, sampleData1, completeData])
     });
 });
 
