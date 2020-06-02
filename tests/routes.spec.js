@@ -38,43 +38,304 @@ describe('Not Found URL', () => {
     })
 });
 
-describe('Post /api/forms', () => {
-    const noTitleData = {
-        "id": "3",
-        "fields": [
-            {
-                "name": "First_Name",
-                "title": "First Name",
-                "type": "Text",
-                "required": true
-            },
-            {
-                "name": "Loc",
-                "title": "Your Location",
-                "type": "Location",
-                "required": false
-            },
+const noTitleData = {
+    "id": "3",
+    "fields": [
+        {
+            "name": "First_Name",
+            "title": "First Name",
+            "type": "Text",
+            "required": true
+        },
+        {
+            "name": "Loc",
+            "title": "Your Location",
+            "type": "Location",
+            "required": false
+        },
 
-            {
-                "name": "Request_Type",
-                "title": "Request Type",
-                "type": "Text",
-                "options": [
-                    {"label": "Help", "value": "Help"},
-                    {"label": "Info", "value": "Information"}
-                ]
-            },
-            {
-                "name": "Base_Location",
-                "title": "Base Location",
-                "type": "Location",
-                "options": [
-                    {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
-                    {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
-                ]
-            }
-        ]
-    };
+        {
+            "name": "Request_Type",
+            "title": "Request Type",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "Help"},
+                {"label": "Info", "value": "Information"}
+            ]
+        },
+        {
+            "name": "Base_Location",
+            "title": "Base Location",
+            "type": "Location",
+            "options": [
+                {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
+                {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
+            ]
+        }
+    ]
+};
+const noIdData = {
+    "title": "A sample form",
+    "fields": [
+        {
+            "name": "First_Name",
+            "title": "First Name",
+            "type": "Text",
+            "required": true
+        },
+        {
+            "name": "Loc",
+            "title": "Your Location",
+            "type": "Location",
+            "required": false
+        },
+
+        {
+            "name": "Request_Type",
+            "title": "Request Type",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "Help"},
+                {"label": "Info", "value": "Information"}
+            ]
+        },
+        {
+            "name": "Base_Location",
+            "title": "Base Location",
+            "type": "Location",
+            "options": [
+                {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
+                {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
+            ]
+        }
+    ]
+};
+const noTitleNoIdData = {
+    "fields": [
+        {
+            "name": "First_Name",
+            "title": "First Name",
+            "type": "Text",
+            "required": true
+        },
+        {
+            "name": "Loc",
+            "title": "Your Location",
+            "type": "Location",
+            "required": false
+        },
+
+        {
+            "name": "Request_Type",
+            "title": "Request Type",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "Help"},
+                {"label": "Info", "value": "Information"}
+            ]
+        },
+        {
+            "name": "Base_Location",
+            "title": "Base Location",
+            "type": "Location",
+            "options": [
+                {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
+                {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
+            ]
+        }
+    ]
+};
+const noFieldsData = {
+    "title": "A sample form",
+    "id": "4",
+};
+const fieldsNoNameData = {
+    "title": "A sample form",
+    "id": "1",
+    "fields": [
+        {
+            "title": "First Name",
+            "type": "Text",
+        },
+        {
+            "name": "Loc",
+            "title": "Your Location",
+            "type": "Location",
+            "required": false
+        }
+    ]
+};
+const fieldsNoTitleData = {
+    "title": "A sample form",
+    "id": "1",
+    "fields": [
+        {
+            "name": "First_Name",
+            "type": "Text",
+            "required": true
+        },
+        {
+            "name": "Loc",
+            "title": "Your Location",
+            "type": "Location",
+            "required": false
+        },
+
+        {
+            "name": "Request_Type",
+            "title": "Request Type",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "Help"},
+                {"label": "Info", "value": "Information"}
+            ]
+        },
+        {
+            "name": "Base_Location",
+            "title": "Base Location",
+            "type": "Location",
+            "options": [
+                {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
+                {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
+            ]
+        }
+    ]
+};
+const fieldsNoTypeData = {
+    "title": "A sample form",
+    "id": "1",
+    "fields": [
+        {
+            "name": "Loc",
+            "title": "Your Location",
+            "required": false
+        },
+
+        {
+            "name": "Request_Type",
+            "title": "Request Type",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "Help"},
+                {"label": "Info", "value": "Information"}
+            ]
+        },
+        {
+            "name": "Base_Location",
+            "title": "Base Location",
+            "type": "Location",
+            "options": [
+                {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
+                {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
+            ]
+        }
+    ]
+};
+const fieldsNoTypeNoNameData1 = {
+    "title": "A sample form",
+    "id": "1",
+    "fields": [
+        {
+            "title": "Your Location",
+            "required": false
+        },
+
+        {
+            "name": "Request_Type",
+            "title": "Request Type",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "Help"},
+                {"label": "Info", "value": "Information"}
+            ]
+        },
+        {
+            "name": "Base_Location",
+            "title": "Base Location",
+            "type": "Location",
+            "options": [
+                {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
+                {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
+            ]
+        }
+    ]
+};
+const fieldsNoTypeNoNameData2 = {
+    "title": "A sample form",
+    "id": "1",
+    "fields": [
+        {
+            "title": "Request Type",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "Help"},
+                {"label": "Info", "value": "Information"}
+            ]
+        },
+        {
+            "name": "Base_Location",
+            "title": "Base Location",
+            "options": [
+                {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
+                {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
+            ]
+        }
+    ]
+};
+const emptyFieldData = {
+    "title": "A sample form",
+    "id": "3",
+    "fields": []
+};
+const sampleData1 = {
+    "title": "A sample form",
+    "id": "2",
+    "fields": []
+};
+const sampleData2 = {
+    "title": "A sample form",
+    "id": "2",
+    "fields": []
+};
+const completeData = {
+    "title": "A samp22le form",
+    "id": "1",
+    "fields": [
+        {
+            "name": "First_Name",
+            "title": "First Name",
+            "type": "Text",
+            "required": true
+        },
+        {
+            "name": "Loc",
+            "title": "Your Location",
+            "type": "Location",
+            "required": false
+        },
+
+        {
+            "name": "Request_Type",
+            "title": "Request Type",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "Help"},
+                {"label": "Info", "value": "Information"}
+            ]
+        },
+        {
+            "name": "Base_Location",
+            "title": "Base Location",
+            "type": "Location",
+            "options": [
+                {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
+                {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
+            ]
+        }
+    ]
+};
+
+describe('Post /api/forms', () => {
     it('should error without title', async () => {
         await clearForTest();
 
@@ -94,43 +355,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(0);
     });
-
-    const noIdData = {
-        "title": "A sample form",
-        "fields": [
-            {
-                "name": "First_Name",
-                "title": "First Name",
-                "type": "Text",
-                "required": true
-            },
-            {
-                "name": "Loc",
-                "title": "Your Location",
-                "type": "Location",
-                "required": false
-            },
-
-            {
-                "name": "Request_Type",
-                "title": "Request Type",
-                "type": "Text",
-                "options": [
-                    {"label": "Help", "value": "Help"},
-                    {"label": "Info", "value": "Information"}
-                ]
-            },
-            {
-                "name": "Base_Location",
-                "title": "Base Location",
-                "type": "Location",
-                "options": [
-                    {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
-                    {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
-                ]
-            }
-        ]
-    };
     it('should error without id', async () => {
         await clearForTest();
 
@@ -150,11 +374,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(0);
     });
-
-    const noFieldsData = {
-        "title": "A sample form",
-        "id": "4",
-    };
     it('should error without fields', async () => {
         await clearForTest();
 
@@ -174,42 +393,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(0);
     });
-
-    const noTitleNoIdData = {
-        "fields": [
-            {
-                "name": "First_Name",
-                "title": "First Name",
-                "type": "Text",
-                "required": true
-            },
-            {
-                "name": "Loc",
-                "title": "Your Location",
-                "type": "Location",
-                "required": false
-            },
-
-            {
-                "name": "Request_Type",
-                "title": "Request Type",
-                "type": "Text",
-                "options": [
-                    {"label": "Help", "value": "Help"},
-                    {"label": "Info", "value": "Information"}
-                ]
-            },
-            {
-                "name": "Base_Location",
-                "title": "Base Location",
-                "type": "Location",
-                "options": [
-                    {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
-                    {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
-                ]
-            }
-        ]
-    };
     it('should error without title and id', async () => {
         await clearForTest();
 
@@ -234,23 +417,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(0);
     });
-
-    const fieldsNoNameData = {
-        "title": "A sample form",
-        "id": "1",
-        "fields": [
-            {
-                "title": "First Name",
-                "type": "Text",
-            },
-            {
-                "name": "Loc",
-                "title": "Your Location",
-                "type": "Location",
-                "required": false
-            }
-        ]
-    };
     it('should error with fields without name', async () => {
         await clearForTest();
 
@@ -271,43 +437,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(0);
     });
-
-    const fieldsNoTitleData = {
-        "title": "A sample form",
-        "id": "1",
-        "fields": [
-            {
-                "name": "First_Name",
-                "type": "Text",
-                "required": true
-            },
-            {
-                "name": "Loc",
-                "title": "Your Location",
-                "type": "Location",
-                "required": false
-            },
-
-            {
-                "name": "Request_Type",
-                "title": "Request Type",
-                "type": "Text",
-                "options": [
-                    {"label": "Help", "value": "Help"},
-                    {"label": "Info", "value": "Information"}
-                ]
-            },
-            {
-                "name": "Base_Location",
-                "title": "Base Location",
-                "type": "Location",
-                "options": [
-                    {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
-                    {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
-                ]
-            }
-        ]
-    };
     it('should error with fields without title', async () => {
         await clearForTest();
 
@@ -328,37 +457,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(0);
     });
-
-    const fieldsNoTypeData = {
-        "title": "A sample form",
-        "id": "1",
-        "fields": [
-            {
-                "name": "Loc",
-                "title": "Your Location",
-                "required": false
-            },
-
-            {
-                "name": "Request_Type",
-                "title": "Request Type",
-                "type": "Text",
-                "options": [
-                    {"label": "Help", "value": "Help"},
-                    {"label": "Info", "value": "Information"}
-                ]
-            },
-            {
-                "name": "Base_Location",
-                "title": "Base Location",
-                "type": "Location",
-                "options": [
-                    {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
-                    {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
-                ]
-            }
-        ]
-    };
     it('should error with fields without type', async () => {
         await clearForTest();
 
@@ -379,36 +477,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(0);
     });
-
-    const fieldsNoTypeNoNameData1 = {
-        "title": "A sample form",
-        "id": "1",
-        "fields": [
-            {
-                "title": "Your Location",
-                "required": false
-            },
-
-            {
-                "name": "Request_Type",
-                "title": "Request Type",
-                "type": "Text",
-                "options": [
-                    {"label": "Help", "value": "Help"},
-                    {"label": "Info", "value": "Information"}
-                ]
-            },
-            {
-                "name": "Base_Location",
-                "title": "Base Location",
-                "type": "Location",
-                "options": [
-                    {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
-                    {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
-                ]
-            }
-        ]
-    };
     it('should error with fields without type and name in one item', async () => {
         await clearForTest();
 
@@ -434,29 +502,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(0);
     });
-
-    const fieldsNoTypeNoNameData2 = {
-        "title": "A sample form",
-        "id": "1",
-        "fields": [
-            {
-                "title": "Request Type",
-                "type": "Text",
-                "options": [
-                    {"label": "Help", "value": "Help"},
-                    {"label": "Info", "value": "Information"}
-                ]
-            },
-            {
-                "name": "Base_Location",
-                "title": "Base Location",
-                "options": [
-                    {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
-                    {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
-                ]
-            }
-        ]
-    };
     it('should error with fields without type and name in separate items', async () => {
         await clearForTest();
 
@@ -482,12 +527,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(0);
     });
-
-    const emptyFieldData = {
-        "title": "A sample form",
-        "id": "3",
-        "fields": []
-    };
     it('should be fine with empty fields', async () => {
         await clearForTest();
 
@@ -499,17 +538,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(1);
     });
-
-    const sampleData1 = {
-        "title": "A sample form",
-        "id": "2",
-        "fields": []
-    };
-    const sampleData2 = {
-        "title": "A sample form",
-        "id": "2",
-        "fields": []
-    };
     it('should error 409(conflict) for exiting id', async () => {
         await clearForTest();
 
@@ -529,44 +557,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(1);
     });
-
-    const completeData = {
-        "title": "A samp22le form",
-        "id": "1",
-        "fields": [
-            {
-                "name": "First_Name",
-                "title": "First Name",
-                "type": "Text",
-                "required": true
-            },
-            {
-                "name": "Loc",
-                "title": "Your Location",
-                "type": "Location",
-                "required": false
-            },
-
-            {
-                "name": "Request_Type",
-                "title": "Request Type",
-                "type": "Text",
-                "options": [
-                    {"label": "Help", "value": "Help"},
-                    {"label": "Info", "value": "Information"}
-                ]
-            },
-            {
-                "name": "Base_Location",
-                "title": "Base Location",
-                "type": "Location",
-                "options": [
-                    {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
-                    {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
-                ]
-            }
-        ]
-    };
     it('should be fine with complete fields', async () => {
         await clearForTest();
 
@@ -578,7 +568,6 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(1);
     });
-
     it('should store multiple forms', async () => {
         await clearForTest();
 
@@ -604,9 +593,25 @@ describe('Post /api/forms', () => {
 });
 
 describe('Get /api/forms', () => {
-    it('should respond work completely', async () => {
+    it('should respond 200', async () => {
         const res = await request(app)
             .get('/api/forms');
         expect(res.statusCode).toEqual(200);
+    });
+
+    it('should respond properly', async () => {
+        await clearForTest();
+
+        await request(app).post('/api/forms').send(emptyFieldData);
+        await request(app).post('/api/forms').send(sampleData1);
+        await request(app).post('/api/forms').send(completeData);
+
+        data = await readDBForTest();
+
+        const res = await request(app)
+            .get('/api/forms');
+        expect(res.statusCode).toEqual(200);
+        const response = JSON.parse(res.text);
+        expect(response.data).toMatchObject([emptyFieldData, sampleData1, completeData])
     });
 });

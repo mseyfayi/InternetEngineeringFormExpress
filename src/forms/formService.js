@@ -1,7 +1,7 @@
 import formsValidations from "./formsValidations";
 import * as formData from "./formData";
 
-export const store = data => new Promise((resolve, reject) => {
+export const store = data => new Promise((resolve, reject) =>
     formsValidations(data)
         .then(data => {
             formData
@@ -16,5 +16,10 @@ export const store = data => new Promise((resolve, reject) => {
             reject({
                 status: error.status || 422,
                 body: error.error
-            }));
-});
+            })));
+
+export const read = () => new Promise(resolve =>
+    formData
+        .read()
+        .then(resolve)
+);
