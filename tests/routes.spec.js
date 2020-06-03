@@ -703,7 +703,7 @@ describe('Get /api/forms/{id}', () => {
 
         const res4 = await request(app)
             .get('/api/forms/4');
-        expect(res3.statusCode).toEqual(404);
+        expect(res4.statusCode).toEqual(404);
 
     });
 });

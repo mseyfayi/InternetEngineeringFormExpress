@@ -26,10 +26,17 @@ export const read = () => new Promise(resolve =>
         .then(data => resolve(data.map(item => ({title: item.title, id: item.id}))))
 );
 
-export const find = id => new Promise(resolve =>
+export const find = id => new Promise((resolve, reject) =>
     formData
         .read()
-        .then(data => resolve(data.find(item => item.id === id)))
+        .then(data => data.find(item => item.id === id))
+        .then(found => {
+            if (found) {
+                resolve(found);
+            } else {
+                reject({status: 404, body: {message: `The form ${id} not found`}});
+            }
+        })
 );
 
 

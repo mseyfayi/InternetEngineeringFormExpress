@@ -5,7 +5,7 @@ export const post = (req, res, next) => {
     service
         .store(data)
         .then(data => res.status(200).send({message: `${data.title} successfully added`}))
-        .catch(error => next(error));
+        .catch(next);
 };
 
 
@@ -15,11 +15,12 @@ export const get = (req, res) => {
         .then(data => res.status(200).send({message: 'Forms list', data}));
 };
 
-export const getById = (req, res) => {
+export const getById = (req, res, next) => {
     const id = req.params.id;
     service
         .find(id)
-        .then(data => res.status(200).send({message: `Form ${id} detail`, data}));
+        .then(data => res.status(200).send({message: `Form ${id} detail`, data}))
+        .catch(next)
 };
 
 export const postById = (req, res) => {
