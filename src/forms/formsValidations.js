@@ -9,11 +9,11 @@ const idConflict = async (data) => {
 
 const isRawString = str => /^([a-zA-Z0-9_]+)$/.test(str);
 
-const duplicateName = fields => fields
-    .map(i => i.name)
+const duplicates = (array, property) => array
+    .map(i => i[property])
     .map((e, i, final) => final.indexOf(e) !== i && i)
-    .filter(obj => fields[obj])
-    .map(e => fields[e].name);
+    .filter(obj => array[obj])
+    .map(e => array[e][property]);
 
 export default data => new Promise(async (resolve, reject) => {
     if (await idConflict(data)) {
@@ -37,14 +37,20 @@ export default data => new Promise(async (resolve, reject) => {
                 if (item.name && !isRawString(item.name)) {
                     errors.push(`Name in items of fields just can accept letters, numbers and underscore`)
                 }
+
+            if (item.options) {
+                duplicates(item.options, 'value')
+                    .forEach(value => errors.push(`${value} is duplicated in field ${item.name || ''} option (values should be uniq)`));
+            }
+
                 requiredFieldsOfFieldsItems
                     .filter(field => !hasRequired(item, field))
                     .forEach(field => errors.push(`${field} is required in items of fields`));
             }
         );
 
-        duplicateName(data.fields)
-            .forEach(name => errors.push(`${name} is duplicated`));
+        duplicates(data.fields, 'name')
+            .forEach(name => errors.push(`${name} is duplicated in field names (names should be uniq)`));
     }
 
     if (errors.length === 0) {

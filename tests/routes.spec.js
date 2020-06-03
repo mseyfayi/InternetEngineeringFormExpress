@@ -408,6 +408,22 @@ const duplicatedFieldName = {
         }
     ]
 };
+const duplicatedFieldOptionValue = {
+    "title": "A samp22le form",
+    "id": "1",
+    "fields": [
+        {
+            "name": "Request_Type",
+            "title": "Request Type",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "Help"},
+                {"label": "Help", "value": "Help"},
+                {"label": "Info", "value": "Information"}
+            ]
+        }
+    ]
+};
 
 describe('Post /api/forms', () => {
     it('should error without title', async () => {
@@ -634,7 +650,27 @@ describe('Post /api/forms', () => {
         expect(!!response.data).toBe(true);
 
         const isDuplicatedInErrors = response.data
-            .map(item => item.includes('First_Name') && item.includes('duplicated'))
+            .map(item => item.includes('First_Name') && item.includes('duplicated') && item.includes('name'))
+            .reduce((a, b) => a || b, false);
+
+        expect(isDuplicatedInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
+    });
+    it('should error with duplicated field option value', async () => {
+        await clearForTest();
+
+        const res = await request(app)
+            .post('/api/forms')
+            .send(duplicatedFieldOptionValue);
+        expect(res.statusCode).toEqual(422);
+
+        const response = JSON.parse(res.text);
+        expect(!!response.data).toBe(true);
+
+        const isDuplicatedInErrors = response.data
+            .map(item => item.includes('Help') && item.includes('duplicated') && item.includes('option'))
             .reduce((a, b) => a || b, false);
 
         expect(isDuplicatedInErrors).toBe(true);
