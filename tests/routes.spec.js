@@ -701,5 +701,10 @@ describe('Get /api/forms/{id}', () => {
             .get('/api/forms/1');
         expect(res3.statusCode).toEqual(200);
 
+        const res4 = await request(app)
+            .get('/api/forms/4');
+        expect(res3.statusCode).toEqual(404);
+
     });
 });
+

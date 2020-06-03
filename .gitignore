@@ -5,6 +5,7 @@
 ### Mine ###
 testDB.json
 db.json
+*.log
 
 ### JetBrains ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm

@@ -29,7 +29,6 @@ export default data => new Promise(async (resolve, reject) => {
         const requiredFieldsOfFieldsItems = ['Name', 'Title', 'Type'];
         data.fields.forEach(item => {
                 if (item.name && !isRawString(item.name)) {
-                    console.log(isRawString(item.name));
                     errors.push(`Name in items of fields just can accept letters, numbers and underscore`)
                 }
                 requiredFieldsOfFieldsItems

@@ -8,6 +8,7 @@ export const post = (req, res, next) => {
         .catch(error => next(error));
 };
 
+
 export const get = (req, res) => {
     service
         .read()
@@ -19,4 +20,13 @@ export const getById = (req, res) => {
     service
         .find(id)
         .then(data => res.status(200).send({message: `Form ${id} detail`, data}));
+};
+
+export const postById = (req, res) => {
+    const id = req.params.id;
+    const data = req.body;
+
+    service
+        .log(id, data)
+        .then(data => res.status(200).send({message: `Your information saved on form ${id}`, data}));
 };
