@@ -9,6 +9,12 @@ const idConflict = async (data) => {
 
 const isRawString = str => /^([a-zA-Z0-9_]+)$/.test(str);
 
+const duplicateName = fields => fields
+    .map(i => i.name)
+    .map((e, i, final) => final.indexOf(e) !== i && i)
+    .filter(obj => fields[obj])
+    .map(e => fields[e].name);
+
 export default data => new Promise(async (resolve, reject) => {
     if (await idConflict(data)) {
         reject({
@@ -36,6 +42,9 @@ export default data => new Promise(async (resolve, reject) => {
                     .forEach(field => errors.push(`${field} is required in items of fields`));
             }
         );
+
+        duplicateName(data.fields)
+            .forEach(name => errors.push(`${name} is duplicated`));
     }
 
     if (errors.length === 0) {

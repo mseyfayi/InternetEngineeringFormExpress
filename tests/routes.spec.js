@@ -371,6 +371,43 @@ const fieldNameWithSpecialChar = {
         }
     ]
 };
+const duplicatedFieldName = {
+    "title": "A samp22le form",
+    "id": "1",
+    "fields": [
+        {
+            "name": "First_Name",
+            "title": "First Name",
+            "type": "Text",
+            "required": true
+        },
+        {
+            "name": "First_Name",
+            "title": "Your Location",
+            "type": "Location",
+            "required": false
+        },
+
+        {
+            "name": "Request_Type",
+            "title": "Request Type",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "Help"},
+                {"label": "Info", "value": "Information"}
+            ]
+        },
+        {
+            "name": "Base_Location",
+            "title": "Base Location",
+            "type": "Location",
+            "options": [
+                {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
+                {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
+            ]
+        }
+    ]
+};
 
 describe('Post /api/forms', () => {
     it('should error without title', async () => {
@@ -581,6 +618,26 @@ describe('Post /api/forms', () => {
             .reduce((a, b) => a || b, false);
 
         expect(isLetterInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
+    });
+    it('should error with duplicated field name', async () => {
+        await clearForTest();
+
+        const res = await request(app)
+            .post('/api/forms')
+            .send(duplicatedFieldName);
+        expect(res.statusCode).toEqual(422);
+
+        const response = JSON.parse(res.text);
+        expect(!!response.data).toBe(true);
+
+        const isDuplicatedInErrors = response.data
+            .map(item => item.includes('First_Name') && item.includes('duplicated'))
+            .reduce((a, b) => a || b, false);
+
+        expect(isDuplicatedInErrors).toBe(true);
 
         data = await readDBForTest();
         expect(data.length).toBe(0);
