@@ -7,6 +7,8 @@ const idConflict = async (data) => {
     return !!forms.find(item => item.id === data.id)
 };
 
+const isRawString = str => /^([a-zA-Z0-9_]+)$/.test(str);
+
 export default data => new Promise(async (resolve, reject) => {
     if (await idConflict(data)) {
         reject({
@@ -25,10 +27,15 @@ export default data => new Promise(async (resolve, reject) => {
 
     if (data.fields) {
         const requiredFieldsOfFieldsItems = ['Name', 'Title', 'Type'];
-        data.fields.forEach(item =>
-            requiredFieldsOfFieldsItems
-                .filter(field => !hasRequired(item, field))
-                .forEach(field => errors.push(`${field} is required in items of fields`))
+        data.fields.forEach(item => {
+                if (item.name && !isRawString(item.name)) {
+                    console.log(isRawString(item.name));
+                    errors.push(`Name in items of fields just can accept letters, numbers and underscore`)
+                }
+                requiredFieldsOfFieldsItems
+                    .filter(field => !hasRequired(item, field))
+                    .forEach(field => errors.push(`${field} is required in items of fields`));
+            }
         );
     }
 

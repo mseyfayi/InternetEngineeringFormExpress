@@ -334,6 +334,43 @@ const completeData = {
         }
     ]
 };
+const fieldNameWithSpecialChar = {
+    "title": "A samp22le form",
+    "id": "1",
+    "fields": [
+        {
+            "name": "First Name",
+            "title": "First Name",
+            "type": "Text",
+            "required": true
+        },
+        {
+            "name": "Loc",
+            "title": "Your Location",
+            "type": "Location",
+            "required": false
+        },
+
+        {
+            "name": "Request_Type",
+            "title": "Request Type",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "Help"},
+                {"label": "Info", "value": "Information"}
+            ]
+        },
+        {
+            "name": "Base_Location",
+            "title": "Base Location",
+            "type": "Location",
+            "options": [
+                {"label": "Base1", "value": {"lat": "1.2", "long": "3.2"}},
+                {"label": "Base2", "value": {"lat": "2.3", "long": "1.434"}}
+            ]
+        }
+    ]
+};
 
 describe('Post /api/forms', () => {
     it('should error without title', async () => {
@@ -527,6 +564,27 @@ describe('Post /api/forms', () => {
         data = await readDBForTest();
         expect(data.length).toBe(0);
     });
+    it('should error with special field name', async () => {
+        await clearForTest();
+
+        const res = await request(app)
+            .post('/api/forms')
+            .send(fieldNameWithSpecialChar);
+        expect(res.statusCode).toEqual(422);
+
+        const response = JSON.parse(res.text);
+        expect(!!response.data).toBe(true);
+
+        const isLetterInErrors = response.data
+            .map(item => item.toLocaleLowerCase())
+            .map(item => item.includes('name') && item.includes('letter'))
+            .reduce((a, b) => a || b, false);
+
+        expect(isLetterInErrors).toBe(true);
+
+        data = await readDBForTest();
+        expect(data.length).toBe(0);
+    });
     it('should be fine with empty fields', async () => {
         await clearForTest();
 
@@ -564,6 +622,9 @@ describe('Post /api/forms', () => {
             .post('/api/forms')
             .send(completeData);
         expect(res.statusCode).toEqual(200);
+
+        const response = JSON.parse(res.text);
+        expect(response.message).toBe('A samp22le form successfully added');
 
         data = await readDBForTest();
         expect(data.length).toBe(1);
@@ -610,8 +671,35 @@ describe('Get /api/forms', () => {
 
         const res = await request(app)
             .get('/api/forms');
+
+        const sentData = [emptyFieldData, sampleData1, completeData];
+        const expectedData = sentData.map(item => ({title: item.title, id: item.id}));
+
         expect(res.statusCode).toEqual(200);
         const response = JSON.parse(res.text);
-        expect(response.data).toMatchObject([emptyFieldData, sampleData1, completeData])
+        expect(response.data).toEqual(expect.arrayContaining(expectedData))
+    });
+});
+
+describe('Get /api/forms/{id}', () => {
+    it('should respond 200', async () => {
+        await clearForTest();
+
+        await request(app).post('/api/forms').send(emptyFieldData);
+        await request(app).post('/api/forms').send(sampleData1);
+        await request(app).post('/api/forms').send(completeData);
+
+        data = await readDBForTest();
+
+        const res1 = await request(app)
+            .get('/api/forms/3');
+        expect(res1.statusCode).toEqual(200);
+        const res2 = await request(app)
+            .get('/api/forms/2');
+        expect(res2.statusCode).toEqual(200);
+        const res3 = await request(app)
+            .get('/api/forms/1');
+        expect(res3.statusCode).toEqual(200);
+
     });
 });
