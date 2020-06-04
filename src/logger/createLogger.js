@@ -15,12 +15,11 @@ const createLogger = () => {
             winston.format.json(),
         ),
         transports: [
-            new winston.transports.File({filename: errorLogFileName, level: 'error'}),
-            new winston.transports.File({filename: combinedLogFileName}),
-            (process.env.NODE_ENV === 'test' ? new winston.transports.File({
-                filename: testErrorLogFileName,
+            new winston.transports.File({
+                filename: process.env.NODE_ENV === 'test' ? testErrorLogFileName : errorLogFileName,
                 level: 'error'
-            }) : null),
+            }),
+            new winston.transports.File({filename: combinedLogFileName}),
         ],
     });
 
