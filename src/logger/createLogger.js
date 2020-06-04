@@ -1,7 +1,7 @@
 import winston from "winston";
 
 const errorLogFileName = 'logfile-error.log';
-const testErrorLogFileName = 'logfile-error-test.log';
+const testLogFileName = 'logfile-test.log';
 const combinedLogFileName = 'logfile-combined.log';
 
 const createLogger = () => {
@@ -16,10 +16,10 @@ const createLogger = () => {
         ),
         transports: [
             new winston.transports.File({
-                filename: process.env.NODE_ENV === 'test' ? testErrorLogFileName : errorLogFileName,
+                filename: errorLogFileName,
                 level: 'error'
             }),
-            new winston.transports.File({filename: combinedLogFileName}),
+            new winston.transports.File({filename: process.env.NODE_ENV === 'test' ? testLogFileName : combinedLogFileName}),
         ],
     });
 

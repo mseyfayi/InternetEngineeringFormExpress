@@ -1,9 +1,9 @@
-import formsValidations from "./formsValidations";
+import {log as formValidationLog, store as formsValidationsStore} from "./formsValidations";
 import * as formData from "./formData";
 import logger from "../logger";
 
 export const store = data => new Promise((resolve, reject) =>
-    formsValidations(data)
+    formsValidationsStore(data)
         .then(data => {
             formData
                 .store(data)
@@ -37,10 +37,18 @@ export const find = id => new Promise((resolve, reject) =>
                 reject({status: 404, body: {message: `The form ${id} not found`}});
             }
         })
+        .catch(reject)
 );
 
 
-export const log = (id, data) => new Promise(resolve => {
-    logger.log('info', `Form: ${id} ${JSON.stringify(data).replace(/"([^"]+)":/g, '$1:')}`);
-    resolve()
+export const log = (id, data) => new Promise((resolve, reject) => {
+    formValidationLog(id, data)
+        .then(() => {
+            logger.log('info', `Form: ${id} ${JSON.stringify(data).replace(/"([^"]+)":/g, '$1:')}`);
+            resolve()
+        })
+        .catch(error => reject({
+            status: error.status || 422,
+            body: error.error
+        }))
 });

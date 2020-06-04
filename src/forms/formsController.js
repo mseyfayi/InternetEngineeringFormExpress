@@ -23,11 +23,12 @@ export const getById = (req, res, next) => {
         .catch(next)
 };
 
-export const postById = (req, res) => {
+export const postById = (req, res, next) => {
     const id = req.params.id;
     const data = req.body;
 
     service
         .log(id, data)
-        .then(data => res.status(200).send({message: `Your information saved on form ${id}`, data}));
+        .then(data => res.status(200).send({message: `Your information saved on form ${id}`, data}))
+        .catch(next);
 };

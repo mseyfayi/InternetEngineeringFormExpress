@@ -746,6 +746,276 @@ describe('Post /api/forms', () => {
     });
 });
 
+const realComplete = {
+    id: 1,
+    title: "fineFormDataReq",
+    fields: [
+        {
+            "name": "text",
+            "title": "text",
+            "type": "Text",
+        },
+        {
+            "name": "number",
+            "title": "number",
+            "type": "Number",
+        },
+        {
+            "name": "Loc",
+            "title": "location",
+            "type": "Text",
+        },
+        {
+            "name": "date",
+            "title": "location",
+            "type": "Date",
+        },
+        {
+            "name": "option",
+            "title": "option",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "koft"},
+                {"label": "Info", "value": "Information"}
+            ]
+        },
+        {
+            "name": "text_r",
+            "title": "text",
+            "type": "Text",
+            "required": true
+        },
+        {
+            "name": "number_r",
+            "title": "number",
+            "type": "Number",
+            "required": true
+        },
+        {
+            "name": "Loc_r",
+            "title": "location",
+            "type": "Text",
+            "required": true
+        },
+        {
+            "name": "date_r",
+            "title": "location",
+            "type": "Date",
+        },
+        {
+            "name": "option_r",
+            "title": "option",
+            "type": "Text",
+            "options": [
+                {"label": "Help", "value": "koft"},
+                {"label": "Info", "value": "Information"}
+            ],
+            "required": true
+        },
+    ]
+};
+
+const fineFormData = {
+    'text_r': 'adasasd',
+    'text': 'adasasdd',
+    'Loc_r': {
+        lat: 2323,
+        lng: 234124
+    },
+    "number_r": '123123',
+    "date_r": new Date(),
+    "option_r": 'koft'
+};
+
+const misRequiredFormData = {
+    'text': 'adasasdd',
+    'Loc_r': {
+        lat: 2323,
+        lng: 234124
+    },
+    "number_r": '31231',
+    "date_r": new Date(),
+    "option_r": 'koft'
+};
+const nullRequiredFormData = {
+    'text_r': null,
+    'text': 'adasasdd',
+    'Loc_r': {
+        lat: 2323,
+        lng: 234124
+    },
+    "number_r": '123123',
+    "date_r": new Date(),
+    "option_r": 'koft'
+};
+const wrongNameFormData = {
+    'tesdfsxt': 'adasasdd',
+    'Loc_r': {
+        lat: 2323,
+        lng: 234124
+    },
+    "number_r": '2421423',
+    "date_r": new Date(),
+    "option_r": 'koft'
+};
+const NaNFormData = {
+    'tesdfsxt': 'adasasdd',
+    'Loc_r': {
+        lat: 2323,
+        lng: 234124
+    },
+    "number_r": 'safs',
+    "date_r": new Date(),
+    "option_r": 'koft'
+};
+const wrongOptionValueFormData = {
+    'tesdfsxt': 'adasasdd',
+    'Loc_r': {
+        lat: 2323,
+        lng: 234124
+    },
+    "number_r": '234324',
+    "date_r": new Date(),
+    "option_r": 'asdsadasd'
+};
+
+describe('Post /api/forms/{id}', () => {
+    it('should work properly', async () => {
+        await clearForTest();
+
+        const res1 = await request(app)
+            .post('/api/forms')
+            .send(realComplete);
+        expect(res1.statusCode).toEqual(200);
+
+        const res2 = await request(app)
+            .post('/api/forms/1')
+            .send(fineFormData);
+
+        expect(res2.statusCode).toEqual(200);
+    });
+    it('should 404', async () => {
+        await clearForTest();
+
+        const res1 = await request(app)
+            .post('/api/forms')
+            .send(realComplete);
+        expect(res1.statusCode).toEqual(200);
+
+        const res2 = await request(app)
+            .post('/api/forms/2')
+            .send(fineFormData);
+        expect(res2.statusCode).toEqual(404);
+    });
+    it('should error without required field', async () => {
+        await clearForTest();
+
+        const res1 = await request(app)
+            .post('/api/forms')
+            .send(realComplete);
+        expect(res1.statusCode).toEqual(200);
+
+        const res2 = await request(app)
+            .post('/api/forms/1')
+            .send(misRequiredFormData);
+        expect(res2.statusCode).toEqual(422);
+
+        const response = JSON.parse(res2.text);
+
+        const isRequiredErrors = response.data
+            .map(item => item.toLocaleLowerCase())
+            .map(item => item.includes('text_r') && item.includes('required'))
+            .reduce((a, b) => a || b, false);
+        expect(isRequiredErrors).toBe(true);
+
+    });
+    it('should error with null required field', async () => {
+        await clearForTest();
+
+        const res1 = await request(app)
+            .post('/api/forms')
+            .send(realComplete);
+        expect(res1.statusCode).toEqual(200);
+
+        const res2 = await request(app)
+            .post('/api/forms/1')
+            .send(nullRequiredFormData);
+        expect(res2.statusCode).toEqual(422);
+
+        const response = JSON.parse(res2.text);
+
+        const isRequiredErrors = response.data
+            .map(item => item.toLocaleLowerCase())
+            .map(item => item.includes('text_r') && item.includes('required'))
+            .reduce((a, b) => a || b, false);
+        expect(isRequiredErrors).toBe(true);
+
+    });
+    it('should error with wrong field name', async () => {
+        await clearForTest();
+
+        const res1 = await request(app)
+            .post('/api/forms')
+            .send(realComplete);
+        expect(res1.statusCode).toEqual(200);
+
+        const res2 = await request(app)
+            .post('/api/forms/1')
+            .send(wrongNameFormData);
+        expect(res2.statusCode).toEqual(422);
+
+        const response = JSON.parse(res2.text);
+
+        const checkErrors = response.data
+            .map(item => item.toLocaleLowerCase())
+            .map(item => item.includes('tesdfsxt'))
+            .reduce((a, b) => a || b, false);
+        expect(checkErrors).toBe(true);
+    });
+    it('should error with NaN', async () => {
+        await clearForTest();
+
+        const res1 = await request(app)
+            .post('/api/forms')
+            .send(realComplete);
+        expect(res1.statusCode).toEqual(200);
+
+        const res2 = await request(app)
+            .post('/api/forms/1')
+            .send(NaNFormData);
+        expect(res2.statusCode).toEqual(422);
+
+        const response = JSON.parse(res2.text);
+
+        const checkErrors = response.data
+            .map(item => item.toLocaleLowerCase())
+            .map(item => item.includes('number_r') && item.includes('not a number'))
+            .reduce((a, b) => a || b, false);
+        expect(checkErrors).toBe(true);
+    });
+    it('should error wrong option value', async () => {
+        await clearForTest();
+
+        const res1 = await request(app)
+            .post('/api/forms')
+            .send(realComplete);
+        expect(res1.statusCode).toEqual(200);
+
+        const res2 = await request(app)
+            .post('/api/forms/1')
+            .send(wrongOptionValueFormData);
+        expect(res2.statusCode).toEqual(422);
+
+        const response = JSON.parse(res2.text);
+
+        const checkErrors = response.data
+            .map(item => item.toLocaleLowerCase())
+            .map(item => item.includes('get') && item.includes('option_r'))
+            .reduce((a, b) => a || b, false);
+        expect(checkErrors).toBe(true);
+    })
+});
+
 describe('Get /api/forms', () => {
     it('should respond 200', async () => {
         const res = await request(app)

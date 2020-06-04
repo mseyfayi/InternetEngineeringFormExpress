@@ -15,7 +15,7 @@ const duplicates = (array, property) => array
     .filter(obj => array[obj])
     .map(e => array[e][property]);
 
-export default data => new Promise(async (resolve, reject) => {
+export const store = data => new Promise(async (resolve, reject) => {
     if (await idConflict(data)) {
         reject({
             status: 409,
@@ -57,5 +57,68 @@ export default data => new Promise(async (resolve, reject) => {
         resolve(data);
     } else {
         reject({error: errors});
+    }
+});
+
+//////////////////////////////////////////////////////////////////
+
+const misRequiredValues = (fields, data) =>
+    fields
+        .filter(i => i.required)
+        .map(i => i.name)
+        .filter(name => !data[name]);
+
+const wrongNames = (fields, data) => {
+    const fieldsNames = fields.map(i => i.name);
+    return Object.keys(data).filter(n => !fieldsNames.includes(n))
+};
+
+const NaNs = (fields, data) =>
+    fields
+        .filter(i => i.type === 'Number')
+        .map(i => i.name)
+        .filter(n => !!data[n])
+        .filter(n => isNaN(data[n]));
+
+const wrongValueOptions = (fields, data) =>
+    fields
+        .filter(i => i.options)
+        .map(i => ({
+            name: i.name,
+            values: i.options.map(o => o.value)
+        }))
+        .filter(i => !!data[i.name])
+        .filter(i => !i.values.includes(data[i.name]));
+
+export const log = (id, data) => new Promise(async (resolve, reject) => {
+    const forms = await formData.read();
+    const form = forms.find(i => parseInt(i.id) === parseInt(id));
+
+    if (!form) {
+        reject({
+            status: 404,
+            error: 'This id not exists'
+        });
+    } else {
+        const fields = form.fields;
+        const errors = [];
+
+        misRequiredValues(fields, data)
+            .forEach(name => errors.push(`${name} is required`));
+
+        wrongNames(fields, data)
+            .forEach(name => errors.push(`${name} is not in the form`));
+
+        NaNs(fields, data)
+            .forEach(name => errors.push(`${name} is not a number`));
+
+        wrongValueOptions(fields, data)
+            .forEach(({name, values}) => errors.push(`${name} only will get [${values}]`));
+
+        if (errors.length === 0) {
+            resolve(data);
+        } else {
+            reject({error: errors});
+        }
     }
 });
